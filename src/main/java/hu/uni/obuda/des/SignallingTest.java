@@ -1,0 +1,68 @@
+package hu.uni.obuda.des;
+
+import hu.uni.obuda.des.core.simulation.EventQueue;
+import hu.uni.obuda.des.core.simulation.Simulator;
+import hu.uni.obuda.des.railways.events.movement.TrainArrivalEvent;
+import hu.uni.obuda.des.railways.installations.Semaphore;
+import hu.uni.obuda.des.railways.installations.SignallingSystem;
+import hu.uni.obuda.des.railways.stations.Station;
+import hu.uni.obuda.des.railways.tracks.Track;
+import hu.uni.obuda.des.railways.trains.Train;
+import hu.uni.obuda.des.railways.util.BoardingTimeCalculator;
+import hu.uni.obuda.des.railways.util.DefaultBoardingTimeCalculator;
+
+import java.util.List;
+
+public class SignallingTest {
+    public static void main(String[] args) {
+        BoardingTimeCalculator btc = new DefaultBoardingTimeCalculator();
+        Station start = new Station("Start Station", btc);
+        Station end = new Station("End Station", btc);
+        Station.Platform platform1 = new Station.Platform("1", start, 1, 80);
+        Station.Platform platform2 =new Station.Platform("2", end, 1, 80);
+        start.addPlatforms(List.of(platform1));
+        end.addPlatforms(List.of(platform2));
+        Track track1 = new Track("Track1", 5, 120);
+        SignallingSystem sys1 = new SignallingSystem("Sys1", 120);
+        Track track12 = new Track("Track12", 1, 120);
+        Semaphore semaphore1 = new Semaphore("Sem1", 120);
+        Track track2 = new Track("Track2", 5, 100);
+        SignallingSystem sys2 = new SignallingSystem("Sys2", 100);
+        Track track22 = new Track("Track22", 2, 120);
+        Semaphore semaphore2 = new Semaphore("Sem2", 120);
+        Track track3 = new Track("Track3", 10, 80);
+        SignallingSystem sys3 = new SignallingSystem("Sys3", 80);
+
+        sys1.setMainLineSemaphore(null);
+        sys1.setNextSystem(sys2);
+        sys2.setPreviousSystem(sys1);
+        sys2.setMainLineSemaphore(semaphore1);
+        sys2.setNextSystem(sys3);
+        sys3.setMainLineSemaphore(semaphore2);
+        sys3.setPreviousSystem(sys2);
+
+        Train train = Train.builder().id("Train1").maxSpeed(120).manufacturer("Siemens").model("DesiroML")
+                .departureStation("Start Station").lineNumber("S10").capacity(300).arrivalStation("End Station")
+                .currentTrack(platform1).currentStation(platform1.getStation())
+                .build();
+
+        List<Track> routes = List.of(track1, sys1,  track12, semaphore1, track2, sys2, track22, semaphore2, track3, sys3, platform2 );
+        train.addStops(start, end);
+        train.getRoute().addAll(routes);
+
+        Train train2 = Train.builder().id("Train2").maxSpeed(160).manufacturer("Siemens").model("Minero")
+                .departureStation("Start Station").lineNumber("Z10").capacity(300).arrivalStation("End Station")
+                .build();
+        train2.addStops(start, end);
+        train2.getRoute().addAll(routes);
+
+        EventQueue eventQueue = new EventQueue();
+        eventQueue.insert(new TrainArrivalEvent(0, train, platform1));
+        eventQueue.insert(new TrainArrivalEvent(4, train2, platform1));
+        //eventQueue.insert(new TrainDepartureEvent(0, train, szob.getPlatforms()[0]));
+        Simulator simulator = new Simulator(eventQueue);
+        simulator.processAllEvents();
+
+
+    }
+}
