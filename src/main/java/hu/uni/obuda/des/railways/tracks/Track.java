@@ -18,26 +18,30 @@ public class Track implements Resource {
         this.maxSpeed = maxSpeed;
     }
 
-    @Override
-    public boolean occupy(Actor actor) {
-    /*  if (currentTrain == null) {
-            currentTrain = (Train) actor;
+    public boolean occupy(Train train) {
+        if (currentTrain == null) {
+            currentTrain = train;
             return true;
         }
-        return false;*/
-        currentTrain = (Train) actor;
-        return true;
+        return false; // Track already occupied
     }
 
     @Override
+    public boolean occupy(Actor actor) {
+        return true;
+    }
+
     public boolean release() {
-       /* if (currentTrain != null) {
+        if (currentTrain != null) {
             currentTrain = null;
             return true;
         }
-        return false;*/
-        currentTrain = null;
-        return true;
+        return false; // No train to release
+    }
+
+
+    public boolean isOccupied() {
+        return currentTrain != null;
     }
 
     @Override

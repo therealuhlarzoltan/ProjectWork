@@ -2,6 +2,7 @@ package hu.uni.obuda.des.railways.trains;
 
 import hu.uni.obuda.des.core.entities.Actor;
 import hu.uni.obuda.des.railways.stations.Station;
+import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.tracks.Track;
 import lombok.Builder;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class Train implements Actor {
     private int currentSpeed;
     private int passengers;
     private Track currentTrack;
+    private Direction currentDirection;
 
     public void addStops(Station... stations) {
         Objects.requireNonNull(stations, "Stations cannot be null");
