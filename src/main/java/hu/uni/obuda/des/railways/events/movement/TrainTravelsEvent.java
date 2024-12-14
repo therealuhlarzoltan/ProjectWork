@@ -3,6 +3,7 @@ package hu.uni.obuda.des.railways.events.movement;
 import hu.uni.obuda.des.core.simulation.AbstractSimulator;
 import hu.uni.obuda.des.railways.events.signalling.SignallingEvent;
 import hu.uni.obuda.des.railways.installations.SignallingSystem;
+import hu.uni.obuda.des.railways.simulation.DirectionalResource;
 import hu.uni.obuda.des.railways.stations.Station;
 import hu.uni.obuda.des.railways.tracks.Track;
 import hu.uni.obuda.des.railways.trains.Train;
@@ -30,7 +31,12 @@ public class TrainTravelsEvent extends TrainMovementEvent {
             } else {
                 simulator.insert(new TrainTravelsEvent(getEventTime() + travelTime, train, nextTrack, currentTrack));
             }
-        } else if (!currentTrack.occupy(train)) {
+        } else if (currentTrack instanceof DirectionalResource dirTrack) {
+            if (!dirTrack.occupy(train, train.getCurrentDirection())) {
+                simulator.insert(new TrainStopsEvent(getEventTime(), train, currentTrack, previousTrack));
+            }
+        }
+        else if (!currentTrack.occupy(train)) {
             simulator.insert(new TrainStopsEvent(getEventTime(), train, currentTrack, previousTrack));
         } else {
             previousTrack.release();

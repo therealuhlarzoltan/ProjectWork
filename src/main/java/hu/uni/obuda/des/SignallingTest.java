@@ -6,10 +6,12 @@ import hu.uni.obuda.des.railways.events.movement.TrainArrivalEvent;
 import hu.uni.obuda.des.railways.installations.Semaphore;
 import hu.uni.obuda.des.railways.installations.SignallingSystem;
 import hu.uni.obuda.des.railways.stations.Station;
+import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.tracks.Track;
 import hu.uni.obuda.des.railways.trains.Train;
 import hu.uni.obuda.des.railways.util.BoardingTimeCalculator;
 import hu.uni.obuda.des.railways.util.DefaultBoardingTimeCalculator;
+import org.apache.commons.math3.util.Pair;
 
 import java.util.List;
 
@@ -49,6 +51,11 @@ public class SignallingTest {
                 .currentTrack(platform1).currentStation(platform1.getStation())
                 .build();
 
+        train.modifySchedule(start.getName(), 0, 0);
+        train.modifySchedule(end.getName(), 10, 10);
+
+        train.setCurrentDirection(Direction.FORWARD);
+
         List<Track> routes = List.of(track1, sys1,  track12, semaphore1, track2, sys2, track22, semaphore2, track3, sys3, platform2 );
         train.addStops(start, end);
         train.getRoute().addAll(routes);
@@ -59,13 +66,16 @@ public class SignallingTest {
         train2.addStops(start, end);
         train2.getRoute().addAll(routes);
 
+        train2.modifySchedule(start.getName(), 4, 4);
+        train2.modifySchedule(end.getName(), 14, 14);
+
+        train2.setCurrentDirection(Direction.FORWARD);
+
         EventQueue eventQueue = new EventQueue();
         eventQueue.insert(new TrainArrivalEvent(0, train, platform1));
         eventQueue.insert(new TrainArrivalEvent(4, train2, platform1));
         //eventQueue.insert(new TrainDepartureEvent(0, train, szob.getPlatforms()[0]));
         Simulator simulator = new Simulator(eventQueue);
         simulator.processAllEvents();
-
-
     }
 }

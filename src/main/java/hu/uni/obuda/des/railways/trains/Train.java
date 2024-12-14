@@ -48,6 +48,15 @@ public class Train implements Actor {
         return Collections.unmodifiableMap(schedule);
     }
 
+    public void modifySchedule(String station, double arrivalTime, double departureTime) {
+        Objects.requireNonNull(station, "Station cannot be null");
+        if (station.isBlank())
+            throw new IllegalArgumentException("Station cannot be blank");
+        if (arrivalTime < 0 || departureTime < 0)
+            throw new IllegalArgumentException("Time cannot be negative");
+        schedule.put(station, Pair.create(arrivalTime, departureTime));
+    }
+
     public int addPassengers(String destination, int count) {
         Objects.requireNonNull(destination, "Destination cannot be null");
         if (destination.isBlank())
