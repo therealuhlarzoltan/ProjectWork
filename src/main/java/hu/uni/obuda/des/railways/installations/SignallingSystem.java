@@ -1,47 +1,33 @@
 package hu.uni.obuda.des.railways.installations;
 
 import hu.uni.obuda.des.core.entities.Actor;
+import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.tracks.Track;
+import hu.uni.obuda.des.railways.trains.Train;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
-@ToString
 public class SignallingSystem extends Track {
-    private SignallingSystem previousSystem;
-    private SignallingSystem nextSystem;
-    private Switch connectedSwitch;
-    private Semaphore mainLineSemaphore;
-    private SignallingSystemState currentState;
 
     public enum SignallingSystemState {
         FREE_SECTION,
-        OCCUPIED_SECTION,
-        WAITING_FOR_TRACK_SWITCH
+        OCCUPIED_SECTION
     }
+
+    private Semaphore startSemaphore;
+    private Semaphore endSemaphore;
+
+    private SignallingSystem previousSystem;
+    private SignallingSystem nextSystem;
+    private SignallingSystemState currentState;
+    private Track track = null;
 
     public SignallingSystem(String id, int maxSpeed) {
         super(id, 0.001, maxSpeed);
-    }
-
-    public SignallingSystem(String id, int maxSpeed, SignallingSystem previousSystem, SignallingSystem nextSystem, Switch connectedSwitch, Semaphore mainLineSemaphore) {
-       this(id, maxSpeed);
-        this.nextSystem = nextSystem;
-        this.previousSystem = previousSystem;
-        this.connectedSwitch = connectedSwitch;
-        this.mainLineSemaphore = mainLineSemaphore;
-        this.currentState = SignallingSystemState.FREE_SECTION;
-    }
-
-    private final List<Object> connectedInstallations = new ArrayList<>();
-
-    public void addConnectedInstallation(Object installation) {
-        connectedInstallations.add(installation);
+        currentState = SignallingSystemState.FREE_SECTION;
     }
 
     @Override

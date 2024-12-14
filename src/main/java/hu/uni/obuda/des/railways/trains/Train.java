@@ -2,6 +2,7 @@ package hu.uni.obuda.des.railways.trains;
 
 import hu.uni.obuda.des.core.entities.Actor;
 import hu.uni.obuda.des.railways.stations.Station;
+import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.tracks.Track;
 import lombok.Builder;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class Train implements Actor {
     private int currentSpeed;
     private int passengers;
     private Track currentTrack;
+    private Direction currentDirection;
 
     public void addStops(Station... stations) {
         Objects.requireNonNull(stations, "Stations cannot be null");
@@ -44,6 +46,15 @@ public class Train implements Actor {
 
     public Map<String, Pair<Double, Double>> getSchedule() {
         return Collections.unmodifiableMap(schedule);
+    }
+
+    public void modifySchedule(String station, double arrivalTime, double departureTime) {
+        Objects.requireNonNull(station, "Station cannot be null");
+        if (station.isBlank())
+            throw new IllegalArgumentException("Station cannot be blank");
+        if (arrivalTime < 0 || departureTime < 0)
+            throw new IllegalArgumentException("Time cannot be negative");
+        schedule.put(station, Pair.create(arrivalTime, departureTime));
     }
 
     public int addPassengers(String destination, int count) {

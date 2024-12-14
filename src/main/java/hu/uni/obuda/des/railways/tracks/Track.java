@@ -5,6 +5,8 @@ import hu.uni.obuda.des.core.entities.Resource;
 import hu.uni.obuda.des.railways.trains.Train;
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter
 public class Track implements Resource {
     protected final String id;
@@ -18,26 +20,27 @@ public class Track implements Resource {
         this.maxSpeed = maxSpeed;
     }
 
-    @Override
-    public boolean occupy(Actor actor) {
-    /*  if (currentTrain == null) {
-            currentTrain = (Train) actor;
-            return true;
-        }
-        return false;*/
-        currentTrain = (Train) actor;
+    private boolean occupy(Train train) {
         return true;
     }
 
     @Override
-    public boolean release() {
-       /* if (currentTrain != null) {
-            currentTrain = null;
-            return true;
+    public boolean occupy(Actor actor) {
+        if (actor instanceof Train) {
+            return occupy((Train) actor);
+        } else {
+            throw new UnsupportedOperationException("Only trains can occupy tracks");
         }
-        return false;*/
+    }
+
+    public boolean release() {
         currentTrain = null;
         return true;
+    }
+
+
+    public boolean isOccupied() {
+        return currentTrain != null;
     }
 
     @Override

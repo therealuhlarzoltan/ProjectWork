@@ -2,17 +2,23 @@ package hu.uni.obuda.des.railways.events.signalling;
 
 import hu.uni.obuda.des.core.events.Event;
 import hu.uni.obuda.des.core.simulation.AbstractSimulator;
+import hu.uni.obuda.des.railways.installations.Semaphore;
 import hu.uni.obuda.des.railways.installations.SignallingSystem;
+import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.trains.Train;
+
+import java.util.Objects;
 
 public class TrainLeftSectionEvent extends Event {
     private final Train train;
     private final SignallingSystem previousSignallingSystem;
+    private final Direction direction;
 
-    public TrainLeftSectionEvent(double eventTime, Train train, SignallingSystem previousSignallingSystem) {
+    public TrainLeftSectionEvent(double eventTime, Train train, SignallingSystem previousSignallingSystem, Direction direction) {
         super(eventTime);
         this.previousSignallingSystem = previousSignallingSystem;
-        this.train = train;
+        this.train = Objects.requireNonNull(train);
+        this.direction = Objects.requireNonNull(direction);
     }
 
     @Override
@@ -23,7 +29,44 @@ public class TrainLeftSectionEvent extends Event {
             return; // No connected signalling system
         }
         System.out.println(train.toString() + " left section guarded by signalling system " + previousSignallingSystem.toString());
+        notifyPreviousSystem(simulator, direction);
+    }
+
+    private Semaphore findPreviousSemaphore(SignallingSystem previousSystem, Direction direction) {
+        if (direction.equals(Direction.FORWARD)) {
+            return previousSystem.getEndSemaphore();
+        } else if (direction.equals(Direction.BACKWARD)) {
+            return previousSystem.getStartSemaphore();
+        } else {
+            assert false : "Invalid direction";
+            return null;
+        }
+    }
+
+    private Semaphore findSecondPreviousSemaphore(SignallingSystem previousSystem, Direction direction) {
+       if (direction.equals(Direction.FORWARD)) {
+           return previousSystem.getStartSemaphore();
+       } else if (direction.equals(Direction.BACKWARD)) {
+           return previousSystem.getEndSemaphore();
+       } else {
+            assert false : "Invalid direction";
+            return null;
+       }
+    }
+
+
+    private void notifyPreviousSystem(AbstractSimulator simulator, Direction direction) {
         previousSignallingSystem.setCurrentState(SignallingSystem.SignallingSystemState.FREE_SECTION);
-        simulator.insert(new SemaphoreChangeEvent(getEventTime(), previousSignallingSystem.getMainLineSemaphore(), true));
+        var prevSem = findPreviousSemaphore(previousSignallingSystem, direction);
+        var secondPrevSem = findSecondPreviousSemaphore(previousSignallingSystem, direction);
+        if (direction.equals(Direction.FORWARD)) {
+            simulator.insert(new SemaphoreChangeEvent(getEventTime(), secondPrevSem, new Direction[] {Direction.FORWARD}, new Direction[] {}));
+            simulator.insert(new SemaphoreChangeEvent(getEventTime(), prevSem, new Direction[] {Direction.BACKWARD}, new Direction[] {}));
+        } else if (direction.equals(Direction.BACKWARD)) {
+            simulator.insert(new SemaphoreChangeEvent(getEventTime(), secondPrevSem, new Direction[] {Direction.BACKWARD}, new Direction[] {}));
+            simulator.insert(new SemaphoreChangeEvent(getEventTime(), prevSem, new Direction[] {Direction.FORWARD}, new Direction[] {}));
+        } else {
+            assert false : "Invalid direction";
+        }
     }
 }
