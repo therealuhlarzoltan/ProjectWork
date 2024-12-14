@@ -11,7 +11,6 @@ import hu.uni.obuda.des.railways.tracks.Track;
 import hu.uni.obuda.des.railways.trains.Train;
 import hu.uni.obuda.des.railways.util.BoardingTimeCalculator;
 import hu.uni.obuda.des.railways.util.DefaultBoardingTimeCalculator;
-import org.apache.commons.math3.util.Pair;
 
 import java.util.List;
 
@@ -60,7 +59,7 @@ public class SignallingTest {
         train.addStops(start, end);
         train.getRoute().addAll(routes);
 
-        Train train2 = Train.builder().id("Train2").maxSpeed(160).manufacturer("Siemens").model("Minero")
+      /*  Train train2 = Train.builder().id("Train2").maxSpeed(160).manufacturer("Siemens").model("Minero")
                 .departureStation("Start Station").lineNumber("Z10").capacity(300).arrivalStation("End Station")
                 .build();
         train2.addStops(start, end);
@@ -69,11 +68,11 @@ public class SignallingTest {
         train2.modifySchedule(start.getName(), 4, 4);
         train2.modifySchedule(end.getName(), 14, 14);
 
-        train2.setCurrentDirection(Direction.FORWARD);
+        train2.setCurrentDirection(Direction.FORWARD);*/
 
         EventQueue eventQueue = new EventQueue();
         eventQueue.insert(new TrainArrivalEvent(0, train, platform1));
-        eventQueue.insert(new TrainArrivalEvent(4, train2, platform1));
+        //eventQueue.insert(new TrainArrivalEvent(4, train2, platform1));
         //eventQueue.insert(new TrainDepartureEvent(0, train, szob.getPlatforms()[0]));
         Simulator simulator = new Simulator(eventQueue);
         simulator.processAllEvents();

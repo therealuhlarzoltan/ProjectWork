@@ -34,6 +34,15 @@ public class TrainTravelsEvent extends TrainMovementEvent {
         } else if (currentTrack instanceof DirectionalResource dirTrack) {
             if (!dirTrack.occupy(train, train.getCurrentDirection())) {
                 simulator.insert(new TrainStopsEvent(getEventTime(), train, currentTrack, previousTrack));
+            } else {
+                previousTrack.release();
+                double travelTime = (currentTrack.getLengthInKm() / Math.max(train.getMaxSpeed(), currentTrack.getMaxSpeed())) * 60;
+                Track nextTrack = train.getRoute().poll();
+                if (nextTrack instanceof Station.Platform && train.getStops().get(train.getStops().indexOf(train.getCurrentStation()) + 1).equals(((Station.Platform) nextTrack).getStation())) {
+                    simulator.insert(new TrainArrivalEvent(getEventTime() + travelTime, train, (Station.Platform) nextTrack));
+                } else {
+                    simulator.insert(new TrainTravelsEvent(getEventTime() + travelTime, train, nextTrack, currentTrack));
+                }
             }
         }
         else if (!currentTrack.occupy(train)) {
