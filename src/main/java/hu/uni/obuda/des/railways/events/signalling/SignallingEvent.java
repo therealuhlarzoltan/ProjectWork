@@ -28,7 +28,7 @@ public class SignallingEvent extends Event {
         System.out.println("Train passed signalling system in direction " + direction);
         var route = train.getRoute();
 
-        simulator.insert(new TrainLeftSectionEvent(getEventTime(), train, signallingSystem.getPreviousSystem(), direction);
+        simulator.insert(new TrainLeftSectionEvent(getEventTime(), train, signallingSystem.getPreviousSystem(), direction));
         simulator.insert(new TrainEnteredSectionEvent(getEventTime(), train, signallingSystem, direction));
 
        /* double travelTime = signallingSystem.getLengthInKm() / Math.min(train.getMaxSpeed(), signallingSystem.getMaxSpeed());
