@@ -60,11 +60,11 @@ public class TrainLeftSectionEvent extends Event {
         var prevSem = findPreviousSemaphore(previousSignallingSystem, direction);
         var secondPrevSem = findSecondPreviousSemaphore(previousSignallingSystem, direction);
         if (direction.equals(Direction.FORWARD)) {
-            simulator.insert(new SemaphoreChangeEvent(getEventTime(), secondPrevSem, Direction.FORWARD));
-            simulator.insert(new SemaphoreChangeEvent(getEventTime(), prevSem, Direction.BACKWARD));
+            simulator.insert(new SemaphoreChangeEvent(getEventTime(), secondPrevSem, new Direction[] {Direction.FORWARD}, new Direction[] {}));
+            simulator.insert(new SemaphoreChangeEvent(getEventTime(), prevSem, new Direction[] {Direction.BACKWARD}, new Direction[] {}));
         } else if (direction.equals(Direction.BACKWARD)) {
-            simulator.insert(new SemaphoreChangeEvent(getEventTime(), secondPrevSem, Direction.BACKWARD));
-            simulator.insert(new SemaphoreChangeEvent(getEventTime(), prevSem, Direction.FORWARD));
+            simulator.insert(new SemaphoreChangeEvent(getEventTime(), secondPrevSem, new Direction[] {Direction.BACKWARD}, new Direction[] {}));
+            simulator.insert(new SemaphoreChangeEvent(getEventTime(), prevSem, new Direction[] {Direction.FORWARD}, new Direction[] {}));
         } else {
             assert false : "Invalid direction";
         }

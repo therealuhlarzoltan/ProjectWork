@@ -33,13 +33,16 @@ public class SignallingTest {
         Track track3 = new Track("Track3", 10, 80);
         SignallingSystem sys3 = new SignallingSystem("Sys3", 80);
 
-        sys1.setMainLineSemaphore(null);
+        sys1.setStartSemaphore(null);
         sys1.setNextSystem(sys2);
+        sys1.setEndSemaphore(semaphore1);
         sys2.setPreviousSystem(sys1);
-        sys2.setMainLineSemaphore(semaphore1);
+        sys2.setStartSemaphore(semaphore1);
         sys2.setNextSystem(sys3);
-        sys3.setMainLineSemaphore(semaphore2);
+        sys2.setEndSemaphore(semaphore2);
+        sys3.setStartSemaphore(semaphore2);
         sys3.setPreviousSystem(sys2);
+        sys3.setEndSemaphore(null);
 
         Train train = Train.builder().id("Train1").maxSpeed(120).manufacturer("Siemens").model("DesiroML")
                 .departureStation("Start Station").lineNumber("S10").capacity(300).arrivalStation("End Station")
