@@ -8,6 +8,8 @@ import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.trains.Train;
 import lombok.Getter;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Getter
@@ -62,10 +64,11 @@ public class TrainEnteredSectionEvent extends Event {
         var nextSem = findNextSemaphore(currentSignallingSystem, direction);
 
         if (direction == Direction.FORWARD) {
-            simulator.insert(new SemaphoreChangeEvent(getEventTime(), prevSem, Direction.BACKWARD));
-            simulator.insert(new SemaphoreChangeEvent(getEventTime(), nextSem, Direction.FORWARD));
+            simulator.insert(new SemaphoreChangeEvent(getEventTime(), prevSem, new Direction[] {}, new Direction[] {Direction.FORWARD}));
+            simulator.insert(new SemaphoreChangeEvent(getEventTime(), nextSem, new Direction[] {}, new Direction[] {Direction.BACKWARD}));
         } else if (direction == Direction.BACKWARD) {
-
+            simulator.insert(new SemaphoreChangeEvent(getEventTime(), prevSem, new Direction[] {}, new Direction[] {Direction.BACKWARD}));
+            simulator.insert(new SemaphoreChangeEvent(getEventTime(), nextSem, new Direction[] {}, new Direction[] {Direction.FORWARD}));
         } else {
             assert false : "Invalid direction";
         }
