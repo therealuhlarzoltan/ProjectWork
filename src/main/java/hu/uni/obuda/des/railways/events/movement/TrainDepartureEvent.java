@@ -17,7 +17,7 @@ public class TrainDepartureEvent extends TrainMovementEvent {
     public void execute(AbstractSimulator simulator) {
         double travelTime = (platform.getLengthInKm() / Math.max(train.getMaxSpeed(), platform.getMaxSpeed())) * 60;
         Track nextTrack = train.getRoute().poll();
-        simulator.insert(new TrainTravelsEvent(getEventTime() + travelTime, train, nextTrack, platform));
+        simulator.insert(new TrainTravelsOnTrackEvent(getEventTime() + travelTime, train, nextTrack, platform));
         System.out.println("Train " + train.toString() + " departed from station " + platform.getStation().getName() + " at time " + getEventTime());
     }
 }

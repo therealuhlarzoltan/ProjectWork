@@ -8,11 +8,11 @@ import hu.uni.obuda.des.railways.stations.Station;
 import hu.uni.obuda.des.railways.tracks.Track;
 import hu.uni.obuda.des.railways.trains.Train;
 
-public class TrainTravelsEvent extends TrainMovementEvent {
+public class TrainTravelsOnTrackEvent extends TrainMovementEvent {
     private final Track currentTrack;
     private final Track previousTrack;
 
-    public TrainTravelsEvent(double eventTime, Train train, Track currentTrack, Track previousTrack) {
+    public TrainTravelsOnTrackEvent(double eventTime, Train train, Track currentTrack, Track previousTrack) {
         super(eventTime, train);
         this.currentTrack = currentTrack;
         this.previousTrack = previousTrack;
@@ -29,7 +29,7 @@ public class TrainTravelsEvent extends TrainMovementEvent {
             if (nextTrack instanceof Station.Platform && train.getStops().get(train.getStops().indexOf(train.getCurrentStation()) + 1).equals(((Station.Platform) nextTrack).getStation())) {
                 simulator.insert(new TrainArrivalEvent(getEventTime() + travelTime, train, (Station.Platform) nextTrack));
             } else {
-                simulator.insert(new TrainTravelsEvent(getEventTime() + travelTime, train, nextTrack, currentTrack));
+                simulator.insert(new TrainTravelsOnTrackEvent(getEventTime() + travelTime, train, nextTrack, currentTrack));
             }
         } else if (currentTrack instanceof DirectionalResource dirTrack) {
             if (!dirTrack.occupy(train, train.getCurrentDirection())) {
@@ -41,7 +41,7 @@ public class TrainTravelsEvent extends TrainMovementEvent {
                 if (nextTrack instanceof Station.Platform && train.getStops().get(train.getStops().indexOf(train.getCurrentStation()) + 1).equals(((Station.Platform) nextTrack).getStation())) {
                     simulator.insert(new TrainArrivalEvent(getEventTime() + travelTime, train, (Station.Platform) nextTrack));
                 } else {
-                    simulator.insert(new TrainTravelsEvent(getEventTime() + travelTime, train, nextTrack, currentTrack));
+                    simulator.insert(new TrainTravelsOnTrackEvent(getEventTime() + travelTime, train, nextTrack, currentTrack));
                 }
             }
         }
@@ -54,7 +54,7 @@ public class TrainTravelsEvent extends TrainMovementEvent {
             if (nextTrack instanceof Station.Platform && train.getStops().get(train.getStops().indexOf(train.getCurrentStation()) + 1).equals(((Station.Platform) nextTrack).getStation())) {
                 simulator.insert(new TrainArrivalEvent(getEventTime() + travelTime, train, (Station.Platform) nextTrack));
             } else {
-                simulator.insert(new TrainTravelsEvent(getEventTime() + travelTime, train, nextTrack, currentTrack));
+                simulator.insert(new TrainTravelsOnTrackEvent(getEventTime() + travelTime, train, nextTrack, currentTrack));
             }
         }
     }
