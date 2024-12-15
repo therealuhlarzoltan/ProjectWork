@@ -28,10 +28,10 @@ public class TrainEnteredSectionEvent extends Event {
     @Override
     public void execute(AbstractSimulator simulator) {
         if (currentSignallingSystem == null) {
-            System.out.println(train.toString() + " entered section guarded by no signalling system");
+            System.out.println(train.toString() + " entered section guarded by no signalling system at time " + getEventTime());
             return; // No signalling system connected
         }
-        System.out.println(train.toString() + " entered section guarded by signalling system " + currentSignallingSystem.toString());
+        System.out.println(train.toString() + " entered section guarded by signalling system " + currentSignallingSystem.toString() + " at time " + getEventTime());
         notifyCurrentSystem(simulator, direction);
     }
 

@@ -29,10 +29,10 @@ public class SignallingEvent extends Event {
     @Override
     public void execute(AbstractSimulator simulator) {
         if (movementEvent instanceof TrainTravelsOnTrackEvent) {
-            System.out.println("Train's head passed signalling system in direction " + direction);
+            System.out.println("Train's head passed signalling system in direction " + direction + " at time " + getEventTime());
             simulator.insert(new TrainEnteredSectionEvent(getEventTime(), train, (SignallingSystem) movementEvent.getTrack(), direction));
         } else if (movementEvent instanceof TrainLeavesTrackEvent) {
-            System.out.println("Train's tail passed signalling system in direction " + direction);
+            System.out.println("Train's tail passed signalling system in direction " + direction + " at time " + getEventTime());
             simulator.insert(new TrainLeftSectionEvent(getEventTime(), train, (SignallingSystem) movementEvent.getTrack(), direction));
         } else {
             assert false : "Invalid movement event type";
