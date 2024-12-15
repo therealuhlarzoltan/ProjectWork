@@ -25,10 +25,10 @@ public class TrainLeftSectionEvent extends Event {
     public void execute(AbstractSimulator simulator) {
 
         if (previousSignallingSystem == null) {
-            System.out.println(train.toString() + " left section guarded by no signalling system");
+            System.out.println(train.toString() + " left section guarded by no signalling system at time " + getEventTime());
             return; // No connected signalling system
         }
-        System.out.println(train.toString() + " left section guarded by signalling system " + previousSignallingSystem.toString());
+        System.out.println(train.toString() + " left section guarded by signalling system " + previousSignallingSystem.toString() + " at time " + getEventTime());
         notifyPreviousSystem(simulator, direction);
     }
 

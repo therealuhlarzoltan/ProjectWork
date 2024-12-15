@@ -22,6 +22,6 @@ public class TrainStopsEvent extends Event {
         System.out.println(train.toString() + " stopped on " + currentTrack.toString());
         train.setCurrentSpeed(0);
         train.setCurrentTrack(currentTrack);
-        simulator.insert(new TrainTravelsEvent(getEventTime() + 1, train, nextTrack, currentTrack)); // Wait for 1 minute
+        simulator.insert(new TrainTravelsOnTrackEvent(getEventTime() + 1, train, nextTrack, currentTrack)); // Wait for 1 minute
     }
 }

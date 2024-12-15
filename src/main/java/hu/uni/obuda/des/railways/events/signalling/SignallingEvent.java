@@ -2,6 +2,9 @@ package hu.uni.obuda.des.railways.events.signalling;
 
 import hu.uni.obuda.des.core.events.Event;
 import hu.uni.obuda.des.core.simulation.AbstractSimulator;
+import hu.uni.obuda.des.railways.events.movement.TrainLeavesTrackEvent;
+import hu.uni.obuda.des.railways.events.movement.TrainMovementEvent;
+import hu.uni.obuda.des.railways.events.movement.TrainTravelsOnTrackEvent;
 import hu.uni.obuda.des.railways.installations.SignallingSystem;
 import hu.uni.obuda.des.railways.installations.Switch;
 import hu.uni.obuda.des.railways.tracks.Direction;
@@ -13,23 +16,28 @@ import java.util.Objects;
 @Getter
 public class SignallingEvent extends Event {
     private final Train train;
-    private final SignallingSystem signallingSystem;
     private final Direction direction;
+    private final TrainMovementEvent movementEvent;
 
-    public SignallingEvent(double eventTime, Train train, SignallingSystem signallingSystem, Direction direction) {
-        super(eventTime);
+    public SignallingEvent(TrainMovementEvent movementEvent, Train train, Direction direction) {
+        super(movementEvent.getEventTime());
         this.train = Objects.requireNonNull(train);
-        this.signallingSystem = Objects.requireNonNull(signallingSystem);
         this.direction = Objects.requireNonNull(direction);
+        this.movementEvent = Objects.requireNonNull(movementEvent);
     }
 
     @Override
     public void execute(AbstractSimulator simulator) {
-        System.out.println("Train passed signalling system in direction " + direction);
-        var route = train.getRoute();
+        if (movementEvent instanceof TrainTravelsOnTrackEvent) {
+            System.out.println("Train's head passed signalling system in direction " + direction + " at time " + getEventTime());
+            simulator.insert(new TrainEnteredSectionEvent(getEventTime(), train, (SignallingSystem) movementEvent.getTrack(), direction));
+        } else if (movementEvent instanceof TrainLeavesTrackEvent) {
+            System.out.println("Train's tail passed signalling system in direction " + direction + " at time " + getEventTime());
+            simulator.insert(new TrainLeftSectionEvent(getEventTime(), train, (SignallingSystem) movementEvent.getTrack(), direction));
+        } else {
+            assert false : "Invalid movement event type";
+        }
 
-        simulator.insert(new TrainLeftSectionEvent(getEventTime(), train, signallingSystem.getPreviousSystem(), direction));
-        simulator.insert(new TrainEnteredSectionEvent(getEventTime(), train, signallingSystem, direction));
 
        /* double travelTime = signallingSystem.getLengthInKm() / Math.min(train.getMaxSpeed(), signallingSystem.getMaxSpeed());
         Track nextTrack = train.getRoute().poll();

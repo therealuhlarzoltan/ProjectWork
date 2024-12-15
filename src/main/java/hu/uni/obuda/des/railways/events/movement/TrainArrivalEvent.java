@@ -2,18 +2,18 @@ package hu.uni.obuda.des.railways.events.movement;
 
 import hu.uni.obuda.des.core.simulation.AbstractSimulator;
 import hu.uni.obuda.des.railways.stations.Station;
+import hu.uni.obuda.des.railways.tracks.Track;
 import hu.uni.obuda.des.railways.trains.Train;
 
 public class TrainArrivalEvent extends TrainMovementEvent {
-    private final Station.Platform platform;
 
     public TrainArrivalEvent(double eventTime, Train train, Station.Platform platform) {
-        super(eventTime, train);
-        this.platform = platform;
+        super(eventTime, train, platform);
     }
 
     @Override
     public void execute(AbstractSimulator simulator) {
+        Station.Platform platform = getPlatform();
         platform.occupy(train);
         train.setCurrentStation(platform.getStation());
         double unBoardingTime = platform.getStation()
@@ -32,5 +32,9 @@ public class TrainArrivalEvent extends TrainMovementEvent {
             simulator.insert(new TrainDepartureEvent(departureTime, train, platform));
         }
         System.out.println("Train " + train.toString() + " arrived at station " + platform.getStation().getName() + " Platform: " + platform.getName() + " at time " + getEventTime());
+    }
+
+   public Station.Platform getPlatform() {
+        return (Station.Platform) track;
     }
 }
