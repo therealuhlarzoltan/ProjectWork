@@ -66,7 +66,7 @@ public class TrainTravelsOnTrackEvent extends TrainMovementEvent {
      * @param train The train that is moving forward.
      */
     private void moveTrainHeadForward(AbstractSimulator simulator, Train train) {
-        double timeToNextTrack = (track.getLengthInKm() / Math.max(train.getMaxSpeed(), track.getMaxSpeed())) * 60;
+        double timeToNextTrack = (track.getLengthInKm() / Math.min(train.getMaxSpeed(), track.getMaxSpeed())) * 60;
         var nextTrack = train.getRoute().poll();
 
         //If the next track is part of a station, a scheduled stop might be required
@@ -85,7 +85,7 @@ public class TrainTravelsOnTrackEvent extends TrainMovementEvent {
     * @param train The train that is leaving the track
      */
     private void moveTrainTailForward(AbstractSimulator simulator, Train train) {
-        double timeToExitPreviousSection = (train.getLengthInKm() / Math.max(train.getMaxSpeed(), track.getMaxSpeed())) * 60;
+        double timeToExitPreviousSection = (train.getLengthInKm() / Math.min(train.getMaxSpeed(), track.getMaxSpeed())) * 60;
         var trainLeavesTrackEvent = new TrainLeavesTrackEvent(getEventTime() + timeToExitPreviousSection, train, previousTrack);
         simulator.insert(trainLeavesTrackEvent);
     }

@@ -15,6 +15,7 @@ public class TrainDepartureEvent extends TrainMovementEvent {
     public void execute(AbstractSimulator simulator) {
         Station.Platform platform = getPlatform();
         Track nextTrack = train.getRoute().poll();
+        //Assuming the train stopped at the end of the platform ---> required travel time is approximately 0
         simulator.insert(new TrainTravelsOnTrackEvent(getEventTime(), train, nextTrack, platform));
         System.out.println("Train " + train.toString() + " departed from station " + platform.getStation().getName() + " at time " + getEventTime());
     }
