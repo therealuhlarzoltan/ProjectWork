@@ -22,7 +22,7 @@ public class TrainTravelsOnTrackEvent extends TrainMovementEvent {
     public void execute(AbstractSimulator simulator) {
         System.out.println("Train " + train.toString() + " is travelling on track " + currentTrack.toString() + " at time " + getEventTime());
         if (currentTrack instanceof SignallingSystem) {
-            simulator.insert(new SignallingEvent(getEventTime(), train, (SignallingSystem) currentTrack, train.getCurrentDirection()));
+            simulator.insert(new SignallingEvent(this, train, train.getCurrentDirection()));
             previousTrack.release();
             double travelTime = (currentTrack.getLengthInKm() / Math.max(train.getMaxSpeed(), currentTrack.getMaxSpeed())) * 60;
             Track nextTrack = train.getRoute().poll();
