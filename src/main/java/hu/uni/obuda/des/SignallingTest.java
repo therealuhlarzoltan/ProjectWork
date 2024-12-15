@@ -26,10 +26,13 @@ public class SignallingTest {
         Track track1 = new Track("Track1", 5, 120);
         SignallingSystem sys1 = new SignallingSystem("Sys1", 120);
         Track track12 = new Track("Track12", 1, 120);
+        Track track13 = new Track("Track13", 3, 120);
         Semaphore semaphore1 = new Semaphore("Sem1", 120);
         Track track2 = new Track("Track2", 5, 100);
+        Track track21 = new Track("Track21", 3, 80);
         SignallingSystem sys2 = new SignallingSystem("Sys2", 100);
         Track track22 = new Track("Track22", 2, 120);
+        Track track23 = new Track("Track23", 8, 160);
         Semaphore semaphore2 = new Semaphore("Sem2", 120);
         Track track3 = new Track("Track3", 10, 80);
         SignallingSystem sys3 = new SignallingSystem("Sys3", 80);
@@ -45,9 +48,10 @@ public class SignallingTest {
         sys3.setPreviousSystem(sys2);
         sys3.setEndSemaphore(null);
 
-        Train train = Train.builder().id("Train1").maxSpeed(120).manufacturer("Siemens").model("DesiroML")
+        Train train = Train.builder().id("Train1").maxSpeed(160).manufacturer("Siemens").model("DesiroML")
                 .departureStation("Start Station").lineNumber("S10").capacity(300).arrivalStation("End Station")
                 .currentTrack(platform1).currentStation(platform1.getStation())
+                .lengthInKm(0.6)
                 .build();
 
         train.modifySchedule(start.getName(), 0, 0);
@@ -55,7 +59,7 @@ public class SignallingTest {
 
         train.setCurrentDirection(Direction.FORWARD);
 
-        List<Track> routes = List.of(track1, sys1,  track12, semaphore1, track2, sys2, track22, semaphore2, track3, sys3, platform2 );
+        List<Track> routes = List.of(track1, sys1,  track12, track13, semaphore1, track2, track21, sys2, track22, track23, semaphore2, track3, sys3, platform2 );
         train.addStops(start, end);
         train.getRoute().addAll(routes);
 
