@@ -57,7 +57,7 @@ public class TrainEnteredSectionEvent extends Event {
 
 
     private void notifyCurrentSystem(AbstractSimulator simulator, Direction direction) {
-        currentBlockSignallingSystem.setCurrentState(BlockSignallingSystem.SignallingSystemState.OCCUPIED_SECTION);
+        currentBlockSignallingSystem.occupy(train);
         var prevSem = findPreviousSemaphore(currentBlockSignallingSystem, direction);
         var nextSem = findNextSemaphore(currentBlockSignallingSystem, direction);
 

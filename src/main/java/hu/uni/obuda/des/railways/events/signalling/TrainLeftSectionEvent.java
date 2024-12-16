@@ -56,7 +56,7 @@ public class TrainLeftSectionEvent extends Event {
 
 
     private void notifyPreviousSystem(AbstractSimulator simulator, Direction direction) {
-        previousBlockSignallingSystem.setCurrentState(BlockSignallingSystem.SignallingSystemState.FREE_SECTION);
+        previousBlockSignallingSystem.release();
         var prevSem = findPreviousSemaphore(previousBlockSignallingSystem, direction);
         var secondPrevSem = findSecondPreviousSemaphore(previousBlockSignallingSystem, direction);
         if (direction.equals(Direction.FORWARD)) {

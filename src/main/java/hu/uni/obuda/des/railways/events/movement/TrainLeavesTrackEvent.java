@@ -3,6 +3,7 @@ package hu.uni.obuda.des.railways.events.movement;
 import hu.uni.obuda.des.core.simulation.AbstractSimulator;
 import hu.uni.obuda.des.railways.events.signalling.SignallingEvent;
 import hu.uni.obuda.des.railways.installations.BlockSignallingSystem;
+import hu.uni.obuda.des.railways.installations.TrackCircuit;
 import hu.uni.obuda.des.railways.tracks.Track;
 import hu.uni.obuda.des.railways.trains.Train;
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class TrainLeavesTrackEvent extends TrainMovementEvent {
         //Logs current event
         System.out.println("Train " + train.toString() + " leaves the track " + track.getId() + " at time " + getEventTime());
         //Checks if signalling required
-        if (track instanceof BlockSignallingSystem sys) {
+        if (track instanceof TrackCircuit) {
             var signallingEvent = createSignallingEvent(this, train);
             simulator.insert(signallingEvent);
         }

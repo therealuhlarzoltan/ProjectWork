@@ -3,6 +3,7 @@ package hu.uni.obuda.des.railways.events.movement;
 import hu.uni.obuda.des.core.simulation.AbstractSimulator;
 import hu.uni.obuda.des.railways.events.signalling.SignallingEvent;
 import hu.uni.obuda.des.railways.installations.BlockSignallingSystem;
+import hu.uni.obuda.des.railways.installations.TrackCircuit;
 import hu.uni.obuda.des.railways.simulation.DirectionalResource;
 import hu.uni.obuda.des.railways.stations.Station;
 import hu.uni.obuda.des.railways.tracks.Track;
@@ -47,7 +48,7 @@ public class TrainTravelsOnTrackEvent extends TrainMovementEvent {
             }
         }
         //Determines required non-movement events
-        if (track instanceof BlockSignallingSystem) {
+        if (track instanceof TrackCircuit) {
             var signallingEvent = createSignallingEvent(this, train);
             simulator.insert(signallingEvent);
         }

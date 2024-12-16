@@ -1,9 +1,7 @@
 package hu.uni.obuda.des.railways.installations;
 
 import hu.uni.obuda.des.core.entities.Actor;
-import hu.uni.obuda.des.railways.simulation.DirectionalResource;
-import hu.uni.obuda.des.railways.tracks.Direction;
-import hu.uni.obuda.des.railways.tracks.Track;
+import hu.uni.obuda.des.core.entities.Resource;
 import hu.uni.obuda.des.railways.trains.Train;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,9 +9,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BlockSignallingSystem implements DirectionalResource {
+public class BlockSignallingSystem implements Resource {
 
-    public enum SignallingSystemState {
+    public enum BlockSignallingSystemState {
         FREE_SECTION,
         OCCUPIED_SECTION
     }
@@ -30,26 +28,39 @@ public class BlockSignallingSystem implements DirectionalResource {
     private BlockSignallingSystem nextSystem;
 
     private Train currentTrain;
-    private SignallingSystemState currentState;
+    private BlockSignallingSystemState currentState;
 
     public BlockSignallingSystem(String id) {
         this.id = id;
-        currentState = SignallingSystemState.FREE_SECTION;
+        currentState = BlockSignallingSystemState.FREE_SECTION;
     }
 
-    @Override
-    public boolean occupy(Actor actor, Direction direction) {
-        return false;
+   private void entersSection(Train train) {
+        currentTrain = train;
+        currentState = BlockSignallingSystemState.OCCUPIED_SECTION;
+    }
+
+    private void exitsSection() {
+        currentTrain = null;
+        currentState = BlockSignallingSystemState.FREE_SECTION;
     }
 
     @Override
     public boolean occupy(Actor actor) {
-        return false;
+       if (actor instanceof Train train) {
+            if (!currentState.equals(BlockSignallingSystemState.FREE_SECTION)) {
+                return false;
+            }
+            entersSection(train);
+        } else {
+            throw new UnsupportedOperationException("Only trains can occupy signalling systems");
+        }
+        return true;
     }
 
     @Override
     public boolean release() {
-
+        exitsSection();
         return true;
     }
 
