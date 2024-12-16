@@ -17,8 +17,8 @@ public class RailwaySimulator extends Simulator {
     private final List<TrainConflictEvent> conflictEvents = new LinkedList<>();
     private final List<Event> eventArchive = new LinkedList<>();
 
-    public RailwaySimulator() {
-        super(new EventQueue());
+    public RailwaySimulator(EventQueue eventQueue) {
+        super(eventQueue);
     }
 
     @Override

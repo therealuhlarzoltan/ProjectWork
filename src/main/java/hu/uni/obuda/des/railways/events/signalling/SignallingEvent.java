@@ -5,8 +5,7 @@ import hu.uni.obuda.des.core.simulation.AbstractSimulator;
 import hu.uni.obuda.des.railways.events.movement.TrainLeavesTrackEvent;
 import hu.uni.obuda.des.railways.events.movement.TrainMovementEvent;
 import hu.uni.obuda.des.railways.events.movement.TrainTravelsOnTrackEvent;
-import hu.uni.obuda.des.railways.installations.SignallingSystem;
-import hu.uni.obuda.des.railways.installations.Switch;
+import hu.uni.obuda.des.railways.installations.TrackCircuit;
 import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.trains.Train;
 import lombok.Getter;
@@ -29,22 +28,33 @@ public class SignallingEvent extends Event {
     @Override
     public void execute(AbstractSimulator simulator) {
         if (movementEvent instanceof TrainTravelsOnTrackEvent) {
-            System.out.println("Train's head passed signalling system in direction " + direction + " at time " + getEventTime());
-            simulator.insert(new TrainEnteredSectionEvent(getEventTime(), train, (SignallingSystem) movementEvent.getTrack(), direction));
+            System.out.println("Train's head passed track circuit " + movementEvent.getTrack().toString() + " in direction " + direction + " at time " + getEventTime());
+            if (direction.equals(Direction.FORWARD)) {
+                if (((TrackCircuit) movementEvent.getTrack()).isStartCircuit()) {
+                    simulator.insert(new TrainEnteredSectionEvent(getEventTime(), train, ((TrackCircuit) movementEvent.getTrack()).getBlockSignallingSystem(), direction));
+                }
+            } else if (direction.equals(Direction.BACKWARD)) {
+                if (!((TrackCircuit) movementEvent.getTrack()).isStartCircuit()) {
+                    simulator.insert(new TrainEnteredSectionEvent(getEventTime(), train, ((TrackCircuit) movementEvent.getTrack()).getBlockSignallingSystem(), direction));
+                }
+            } else {
+                assert false : "Invalid direction";
+            }
         } else if (movementEvent instanceof TrainLeavesTrackEvent) {
-            System.out.println("Train's tail passed signalling system in direction " + direction + " at time " + getEventTime());
-            simulator.insert(new TrainLeftSectionEvent(getEventTime(), train, (SignallingSystem) movementEvent.getTrack(), direction));
+            System.out.println("Train's tail passed track circuit " + movementEvent.getTrack().toString() + " in direction " + direction + " at time " + getEventTime());
+            if (direction.equals(Direction.FORWARD)) {
+                if (!((TrackCircuit) movementEvent.getTrack()).isStartCircuit()) {
+                    simulator.insert(new TrainLeftSectionEvent(getEventTime(), train, ((TrackCircuit) movementEvent.getTrack()).getBlockSignallingSystem(), direction));
+                }
+            } else if (direction.equals(Direction.BACKWARD)) {
+                if (((TrackCircuit) movementEvent.getTrack()).isStartCircuit()) {
+                    simulator.insert(new TrainLeftSectionEvent(getEventTime(), train, ((TrackCircuit) movementEvent.getTrack()).getBlockSignallingSystem(), direction));
+                }
+            } else {
+                assert false : "Invalid direction";
+            }
         } else {
             assert false : "Invalid movement event type";
         }
-
-
-       /* double travelTime = signallingSystem.getLengthInKm() / Math.min(train.getMaxSpeed(), signallingSystem.getMaxSpeed());
-        Track nextTrack = train.getRoute().poll();
-        if (nextTrack instanceof Station.Platform && train.getStops().get(train.getStops().indexOf(train.getCurrentStation()) + 1).equals(((Station.Platform) nextTrack).getStation())) {
-            simulator.insert(new TrainArrivalEvent(getEventTime() + travelTime, train, (Station.Platform) nextTrack));
-        } else {
-            simulator.insert(new TrainTravelsEvent(getEventTime() + travelTime, train, signallingSystem, nextTrack));
-        }*/
     }
 }

@@ -3,39 +3,37 @@ package hu.uni.obuda.des.railways.events.signalling;
 import hu.uni.obuda.des.core.events.Event;
 import hu.uni.obuda.des.core.simulation.AbstractSimulator;
 import hu.uni.obuda.des.railways.installations.Semaphore;
-import hu.uni.obuda.des.railways.installations.SignallingSystem;
+import hu.uni.obuda.des.railways.installations.BlockSignallingSystem;
 import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.trains.Train;
 import lombok.Getter;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Objects;
 
 @Getter
 public class TrainEnteredSectionEvent extends Event {
     private final Train train;
-    private final SignallingSystem currentSignallingSystem;
+    private final BlockSignallingSystem currentBlockSignallingSystem;
     private final Direction direction;
 
-    public TrainEnteredSectionEvent(double eventTime, Train train, SignallingSystem currentSignallingSystem, Direction direction) {
+    public TrainEnteredSectionEvent(double eventTime, Train train, BlockSignallingSystem currentBlockSignallingSystem, Direction direction) {
         super(eventTime);
-        this.currentSignallingSystem = currentSignallingSystem;
+        this.currentBlockSignallingSystem = currentBlockSignallingSystem;
         this.train = Objects.requireNonNull(train);
         this.direction = Objects.requireNonNull(direction);
     }
 
     @Override
     public void execute(AbstractSimulator simulator) {
-        if (currentSignallingSystem == null) {
+        if (currentBlockSignallingSystem == null) {
             System.out.println(train.toString() + " entered section guarded by no signalling system at time " + getEventTime());
             return; // No signalling system connected
         }
-        System.out.println(train.toString() + " entered section guarded by signalling system " + currentSignallingSystem.toString() + " at time " + getEventTime());
+        System.out.println(train.toString() + " entered section guarded by signalling system " + currentBlockSignallingSystem.toString() + " at time " + getEventTime());
         notifyCurrentSystem(simulator, direction);
     }
 
-    private Semaphore findPreviousSemaphore(SignallingSystem currentSystem, Direction direction) {
+    private Semaphore findPreviousSemaphore(BlockSignallingSystem currentSystem, Direction direction) {
         if (direction.equals(Direction.FORWARD)) {
             return currentSystem.getStartSemaphore();
         } else if (direction.equals(Direction.BACKWARD)) {
@@ -46,7 +44,7 @@ public class TrainEnteredSectionEvent extends Event {
         }
     }
 
-    private Semaphore findNextSemaphore(SignallingSystem currentSystem, Direction direction) {
+    private Semaphore findNextSemaphore(BlockSignallingSystem currentSystem, Direction direction) {
         if (direction.equals(Direction.FORWARD)) {
             return currentSystem.getEndSemaphore();
         } else if (direction.equals(Direction.BACKWARD)) {
@@ -59,9 +57,9 @@ public class TrainEnteredSectionEvent extends Event {
 
 
     private void notifyCurrentSystem(AbstractSimulator simulator, Direction direction) {
-        currentSignallingSystem.setCurrentState(SignallingSystem.SignallingSystemState.OCCUPIED_SECTION);
-        var prevSem = findPreviousSemaphore(currentSignallingSystem, direction);
-        var nextSem = findNextSemaphore(currentSignallingSystem, direction);
+        currentBlockSignallingSystem.occupy(train);
+        var prevSem = findPreviousSemaphore(currentBlockSignallingSystem, direction);
+        var nextSem = findNextSemaphore(currentBlockSignallingSystem, direction);
 
         if (direction == Direction.FORWARD) {
             simulator.insert(new SemaphoreChangeEvent(getEventTime(), prevSem, new Direction[] {}, new Direction[] {Direction.FORWARD}));
