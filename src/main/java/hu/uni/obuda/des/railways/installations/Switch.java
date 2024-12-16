@@ -21,7 +21,7 @@ public class Switch extends Track {
         this.selectedTrack = connectedTrack1;
     }
 
-    private final List<SignallingSystem> signallingSystems = new ArrayList<>(4);
+    private final List<BlockSignallingSystem> blockSignallingSystems = new ArrayList<>(4);
     private final List<Semaphore> semaphores = new ArrayList<>(4);
     private Track selectedTrack;
 
@@ -37,8 +37,8 @@ public class Switch extends Track {
         return true;
     }
 
-    public void addSignallingSystem(SignallingSystem signallingSystem) {
-        signallingSystems.add(signallingSystem);
+    public void addSignallingSystem(BlockSignallingSystem blockSignallingSystem) {
+        blockSignallingSystems.add(blockSignallingSystem);
     }
 
     public void addSemaphore(Semaphore semaphore) {

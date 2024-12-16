@@ -3,7 +3,7 @@ package hu.uni.obuda.des.railways.events.signalling;
 import hu.uni.obuda.des.core.events.Event;
 import hu.uni.obuda.des.core.simulation.AbstractSimulator;
 import hu.uni.obuda.des.railways.installations.Semaphore;
-import hu.uni.obuda.des.railways.installations.SignallingSystem;
+import hu.uni.obuda.des.railways.installations.BlockSignallingSystem;
 import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.trains.Train;
 
@@ -11,12 +11,12 @@ import java.util.Objects;
 
 public class TrainLeftSectionEvent extends Event {
     private final Train train;
-    private final SignallingSystem previousSignallingSystem;
+    private final BlockSignallingSystem previousBlockSignallingSystem;
     private final Direction direction;
 
-    public TrainLeftSectionEvent(double eventTime, Train train, SignallingSystem previousSignallingSystem, Direction direction) {
+    public TrainLeftSectionEvent(double eventTime, Train train, BlockSignallingSystem previousBlockSignallingSystem, Direction direction) {
         super(eventTime);
-        this.previousSignallingSystem = previousSignallingSystem;
+        this.previousBlockSignallingSystem = previousBlockSignallingSystem;
         this.train = Objects.requireNonNull(train);
         this.direction = Objects.requireNonNull(direction);
     }
@@ -24,15 +24,15 @@ public class TrainLeftSectionEvent extends Event {
     @Override
     public void execute(AbstractSimulator simulator) {
 
-        if (previousSignallingSystem == null) {
+        if (previousBlockSignallingSystem == null) {
             System.out.println(train.toString() + " left section guarded by no signalling system at time " + getEventTime());
             return; // No connected signalling system
         }
-        System.out.println(train.toString() + " left section guarded by signalling system " + previousSignallingSystem.toString() + " at time " + getEventTime());
+        System.out.println(train.toString() + " left section guarded by signalling system " + previousBlockSignallingSystem.toString() + " at time " + getEventTime());
         notifyPreviousSystem(simulator, direction);
     }
 
-    private Semaphore findPreviousSemaphore(SignallingSystem previousSystem, Direction direction) {
+    private Semaphore findPreviousSemaphore(BlockSignallingSystem previousSystem, Direction direction) {
         if (direction.equals(Direction.FORWARD)) {
             return previousSystem.getEndSemaphore();
         } else if (direction.equals(Direction.BACKWARD)) {
@@ -43,7 +43,7 @@ public class TrainLeftSectionEvent extends Event {
         }
     }
 
-    private Semaphore findSecondPreviousSemaphore(SignallingSystem previousSystem, Direction direction) {
+    private Semaphore findSecondPreviousSemaphore(BlockSignallingSystem previousSystem, Direction direction) {
        if (direction.equals(Direction.FORWARD)) {
            return previousSystem.getStartSemaphore();
        } else if (direction.equals(Direction.BACKWARD)) {
@@ -56,9 +56,9 @@ public class TrainLeftSectionEvent extends Event {
 
 
     private void notifyPreviousSystem(AbstractSimulator simulator, Direction direction) {
-        previousSignallingSystem.setCurrentState(SignallingSystem.SignallingSystemState.FREE_SECTION);
-        var prevSem = findPreviousSemaphore(previousSignallingSystem, direction);
-        var secondPrevSem = findSecondPreviousSemaphore(previousSignallingSystem, direction);
+        previousBlockSignallingSystem.setCurrentState(BlockSignallingSystem.SignallingSystemState.FREE_SECTION);
+        var prevSem = findPreviousSemaphore(previousBlockSignallingSystem, direction);
+        var secondPrevSem = findSecondPreviousSemaphore(previousBlockSignallingSystem, direction);
         if (direction.equals(Direction.FORWARD)) {
             simulator.insert(new SemaphoreChangeEvent(getEventTime(), secondPrevSem, new Direction[] {Direction.FORWARD}, new Direction[] {}));
             simulator.insert(new SemaphoreChangeEvent(getEventTime(), prevSem, new Direction[] {Direction.BACKWARD}, new Direction[] {}));

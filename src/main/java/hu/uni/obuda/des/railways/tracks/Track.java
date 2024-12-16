@@ -15,12 +15,14 @@ public class Track implements Resource {
     protected Train currentTrain;
 
     public Track(String id, double lengthInKm, int maxSpeed) {
-        this.id = id;
+        this.id = Objects.requireNonNull(id);
         this.lengthInKm = lengthInKm;
         this.maxSpeed = maxSpeed;
     }
 
     private boolean occupy(Train train) {
+        currentTrain = train;
+        train.setCurrentTrack(this);
         return true;
     }
 
@@ -34,7 +36,10 @@ public class Track implements Resource {
     }
 
     public boolean release() {
-        currentTrain = null;
+        if (currentTrain != null) {
+            currentTrain.setCurrentTrack(null);
+            currentTrain = null;
+        }
         return true;
     }
 

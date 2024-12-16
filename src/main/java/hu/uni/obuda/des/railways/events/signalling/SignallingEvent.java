@@ -5,8 +5,7 @@ import hu.uni.obuda.des.core.simulation.AbstractSimulator;
 import hu.uni.obuda.des.railways.events.movement.TrainLeavesTrackEvent;
 import hu.uni.obuda.des.railways.events.movement.TrainMovementEvent;
 import hu.uni.obuda.des.railways.events.movement.TrainTravelsOnTrackEvent;
-import hu.uni.obuda.des.railways.installations.SignallingSystem;
-import hu.uni.obuda.des.railways.installations.Switch;
+import hu.uni.obuda.des.railways.installations.BlockSignallingSystem;
 import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.trains.Train;
 import lombok.Getter;
@@ -30,10 +29,10 @@ public class SignallingEvent extends Event {
     public void execute(AbstractSimulator simulator) {
         if (movementEvent instanceof TrainTravelsOnTrackEvent) {
             System.out.println("Train's head passed signalling system in direction " + direction + " at time " + getEventTime());
-            simulator.insert(new TrainEnteredSectionEvent(getEventTime(), train, (SignallingSystem) movementEvent.getTrack(), direction));
+            simulator.insert(new TrainEnteredSectionEvent(getEventTime(), train, (BlockSignallingSystem) movementEvent.getTrack(), direction));
         } else if (movementEvent instanceof TrainLeavesTrackEvent) {
             System.out.println("Train's tail passed signalling system in direction " + direction + " at time " + getEventTime());
-            simulator.insert(new TrainLeftSectionEvent(getEventTime(), train, (SignallingSystem) movementEvent.getTrack(), direction));
+            simulator.insert(new TrainLeftSectionEvent(getEventTime(), train, (BlockSignallingSystem) movementEvent.getTrack(), direction));
         } else {
             assert false : "Invalid movement event type";
         }
