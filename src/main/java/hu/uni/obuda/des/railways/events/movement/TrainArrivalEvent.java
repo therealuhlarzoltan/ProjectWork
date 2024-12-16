@@ -30,6 +30,8 @@ public class TrainArrivalEvent extends TrainMovementEvent {
         double departureTime = Math.max(getEventTime() + unBoardingTime + boardingTime, train.getSchedule().get(platform.getStation().getName()).getSecond());
         if (!train.getRoute().isEmpty()) {
             simulator.insert(new TrainDepartureEvent(departureTime, train, platform));
+        } else {
+            simulator.insert(new TrainTerminatesEvent(getEventTime(), train, platform));
         }
         System.out.println("Train " + train.toString() + " arrived at station " + platform.getStation().getName() + " Platform: " + platform.getName() + " at time " + getEventTime());
     }
