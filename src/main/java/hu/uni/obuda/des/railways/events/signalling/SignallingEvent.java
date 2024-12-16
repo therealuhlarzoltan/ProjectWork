@@ -31,18 +31,26 @@ public class SignallingEvent extends Event {
         if (movementEvent instanceof TrainTravelsOnTrackEvent) {
             System.out.println("Train's head passed track circuit " + movementEvent.getTrack().toString() + " in direction " + direction + " at time " + getEventTime());
             if (direction.equals(Direction.FORWARD)) {
-                simulator.insert(new TrainEnteredSectionEvent(getEventTime(), train, ((TrackCircuit) movementEvent.getTrack()).getNextBlockSignallingSystem(), direction));
+                if (((TrackCircuit) movementEvent.getTrack()).isStartCircuit()) {
+                    simulator.insert(new TrainEnteredSectionEvent(getEventTime(), train, ((TrackCircuit) movementEvent.getTrack()).getBlockSignallingSystem(), direction));
+                }
             } else if (direction.equals(Direction.BACKWARD)) {
-                simulator.insert(new TrainEnteredSectionEvent(getEventTime(), train, ((TrackCircuit) movementEvent.getTrack()).getPreviousBlockSignallingSystem(), direction));
+                if (!((TrackCircuit) movementEvent.getTrack()).isStartCircuit()) {
+                    simulator.insert(new TrainEnteredSectionEvent(getEventTime(), train, ((TrackCircuit) movementEvent.getTrack()).getBlockSignallingSystem(), direction));
+                }
             } else {
                 assert false : "Invalid direction";
             }
         } else if (movementEvent instanceof TrainLeavesTrackEvent) {
             System.out.println("Train's tail passed track circuit " + movementEvent.getTrack().toString() + " in direction " + direction + " at time " + getEventTime());
             if (direction.equals(Direction.FORWARD)) {
-                simulator.insert(new TrainLeftSectionEvent(getEventTime(), train, ((TrackCircuit) movementEvent.getTrack()).getPreviousBlockSignallingSystem(), direction));
+                if (!((TrackCircuit) movementEvent.getTrack()).isStartCircuit()) {
+                    simulator.insert(new TrainLeftSectionEvent(getEventTime(), train, ((TrackCircuit) movementEvent.getTrack()).getBlockSignallingSystem(), direction));
+                }
             } else if (direction.equals(Direction.BACKWARD)) {
-                simulator.insert(new TrainLeftSectionEvent(getEventTime(), train, ((TrackCircuit) movementEvent.getTrack()).getPreviousBlockSignallingSystem(), direction));
+                if (((TrackCircuit) movementEvent.getTrack()).isStartCircuit()) {
+                    simulator.insert(new TrainLeftSectionEvent(getEventTime(), train, ((TrackCircuit) movementEvent.getTrack()).getBlockSignallingSystem(), direction));
+                }
             } else {
                 assert false : "Invalid direction";
             }

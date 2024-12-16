@@ -64,10 +64,10 @@ public class SignallingTest {
 
         sys1.setStartTrackCircuit(circuit1);
         sys1.setEndTrackCircuit(circuit2);
-        sys2.setStartTrackCircuit(circuit2);
-        sys2.setEndTrackCircuit(circuit3);
-        sys3.setStartTrackCircuit(circuit3);
-        sys3.setEndTrackCircuit(circuit4);
+        sys2.setStartTrackCircuit(circuit3);
+        sys2.setEndTrackCircuit(circuit4);
+        sys3.setStartTrackCircuit(circuit5);
+        sys3.setEndTrackCircuit(circuit6);
 
         Train train = Train.builder().id("Train1").maxSpeed(160).manufacturer("Siemens").model("DesiroML")
                 .departureStation("Start Station").lineNumber("S10").capacity(300).arrivalStation("End Station")
