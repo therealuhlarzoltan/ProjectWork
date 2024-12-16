@@ -1,8 +1,5 @@
 package hu.uni.obuda.des.railways.installations;
 
-import hu.uni.obuda.des.core.entities.Actor;
-import hu.uni.obuda.des.railways.simulation.DirectionalResource;
-import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.tracks.Track;
 import lombok.Getter;
 import lombok.Setter;

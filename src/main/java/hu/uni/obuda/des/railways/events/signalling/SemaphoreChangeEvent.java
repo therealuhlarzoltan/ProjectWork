@@ -6,8 +6,6 @@ import hu.uni.obuda.des.railways.installations.Semaphore;
 import hu.uni.obuda.des.railways.tracks.Direction;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 public class SemaphoreChangeEvent extends Event {
     private final Semaphore semaphore;
@@ -35,10 +33,10 @@ public class SemaphoreChangeEvent extends Event {
         for (var dir : redDirections) {
             semaphore.setRed(dir);
         }
-        printLog(semaphore, greenDirections, redDirections);
+        printLog(semaphore);
     }
 
-    private void printLog(Semaphore semaphore, Direction[] greenDirections, Direction[] redDirections) {
+    private void printLog(Semaphore semaphore) {
         System.out.println("New state of semaphore " + semaphore.getId() + " FORWARD: " + (semaphore.isGreen(Direction.FORWARD) ? "Green" : "Red") + " BACKWARD: " + (semaphore.isGreen(Direction.BACKWARD) ? "Green" : "Red"));
     }
 }

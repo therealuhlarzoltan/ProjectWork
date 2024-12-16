@@ -5,7 +5,6 @@ import hu.uni.obuda.des.core.simulation.AbstractSimulator;
 import hu.uni.obuda.des.railways.events.movement.TrainLeavesTrackEvent;
 import hu.uni.obuda.des.railways.events.movement.TrainMovementEvent;
 import hu.uni.obuda.des.railways.events.movement.TrainTravelsOnTrackEvent;
-import hu.uni.obuda.des.railways.installations.BlockSignallingSystem;
 import hu.uni.obuda.des.railways.installations.TrackCircuit;
 import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.trains.Train;

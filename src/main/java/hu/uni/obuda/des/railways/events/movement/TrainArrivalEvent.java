@@ -2,7 +2,6 @@ package hu.uni.obuda.des.railways.events.movement;
 
 import hu.uni.obuda.des.core.simulation.AbstractSimulator;
 import hu.uni.obuda.des.railways.stations.Station;
-import hu.uni.obuda.des.railways.tracks.Track;
 import hu.uni.obuda.des.railways.trains.Train;
 
 public class TrainArrivalEvent extends TrainMovementEvent {

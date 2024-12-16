@@ -1,7 +1,6 @@
 package hu.uni.obuda.des.railways.events.movement;
 
 import hu.uni.obuda.des.core.simulation.AbstractSimulator;
-import hu.uni.obuda.des.core.simulation.Simulator;
 import hu.uni.obuda.des.railways.simulation.RailwaySimulator;
 import hu.uni.obuda.des.railways.tracks.Track;
 import hu.uni.obuda.des.railways.trains.Train;
