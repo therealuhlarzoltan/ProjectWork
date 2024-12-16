@@ -36,10 +36,7 @@ public class Track implements Resource {
     }
 
     public boolean release() {
-        if (isOccupied()) {
-            currentTrain.setCurrentTrack(null);
-            currentTrain = null;
-        }
+        currentTrain = null;
         return true;
     }
 

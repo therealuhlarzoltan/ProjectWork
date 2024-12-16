@@ -5,6 +5,7 @@ import hu.uni.obuda.des.core.simulation.Simulator;
 import hu.uni.obuda.des.railways.events.movement.TrainArrivalEvent;
 import hu.uni.obuda.des.railways.installations.Semaphore;
 import hu.uni.obuda.des.railways.installations.BlockSignallingSystem;
+import hu.uni.obuda.des.railways.installations.TrackCircuit;
 import hu.uni.obuda.des.railways.stations.Station;
 import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.tracks.Track;
@@ -23,19 +24,23 @@ public class SignallingTest {
         Station.Platform platform2 = new Station.Platform("2", end, 1, 80);
         start.addPlatforms(List.of(platform1));
         end.addPlatforms(List.of(platform2));
+        TrackCircuit circuit1 = new TrackCircuit("Circuit1", 120);
         Track track1 = new Track("Track1", 5, 120);
-        BlockSignallingSystem sys1 = new BlockSignallingSystem("Sys1", 120);
+        BlockSignallingSystem sys1 = new BlockSignallingSystem("Block1");
         Track track12 = new Track("Track12", 1, 120);
         Track track13 = new Track("Track13", 3, 120);
+        TrackCircuit circuit2 = new TrackCircuit("Circuit2", 120);
         Semaphore semaphore1 = new Semaphore("Sem1", 120);
         Track track2 = new Track("Track2", 5, 100);
         Track track21 = new Track("Track21", 3, 80);
-        BlockSignallingSystem sys2 = new BlockSignallingSystem("Sys2", 100);
+        BlockSignallingSystem sys2 = new BlockSignallingSystem("Block2");
         Track track22 = new Track("Track22", 2, 120);
         Track track23 = new Track("Track23", 8, 160);
         Semaphore semaphore2 = new Semaphore("Sem2", 120);
+        TrackCircuit circuit3 = new TrackCircuit("Circuit3", 80);
         Track track3 = new Track("Track3", 10, 80);
-        BlockSignallingSystem sys3 = new BlockSignallingSystem("Sys3", 80);
+        TrackCircuit circuit4 = new TrackCircuit("Circuit4", 80);
+        BlockSignallingSystem sys3 = new BlockSignallingSystem("Block3");
 
         sys1.setStartSemaphore(null);
         sys1.setNextSystem(sys2);
@@ -48,6 +53,22 @@ public class SignallingTest {
         sys3.setPreviousSystem(sys2);
         sys3.setEndSemaphore(null);
 
+        circuit1.setPreviousBlockSignallingSystem(null);
+        circuit1.setNextBlockSignallingSystem(sys1);
+        circuit2.setPreviousBlockSignallingSystem(sys1);
+        circuit2.setNextBlockSignallingSystem(sys2);
+        circuit3.setPreviousBlockSignallingSystem(sys2);
+        circuit3.setNextBlockSignallingSystem(sys3);
+        circuit4.setPreviousBlockSignallingSystem(sys3);
+        circuit4.setNextBlockSignallingSystem(null);
+
+        sys1.setStartTrackCircuit(circuit1);
+        sys1.setEndTrackCircuit(circuit2);
+        sys2.setStartTrackCircuit(circuit2);
+        sys2.setEndTrackCircuit(circuit3);
+        sys3.setStartTrackCircuit(circuit3);
+        sys3.setEndTrackCircuit(circuit4);
+
         Train train = Train.builder().id("Train1").maxSpeed(160).manufacturer("Siemens").model("DesiroML")
                 .departureStation("Start Station").lineNumber("S10").capacity(300).arrivalStation("End Station")
                 .currentTrack(platform1).currentStation(platform1.getStation())
@@ -59,7 +80,7 @@ public class SignallingTest {
 
         train.setCurrentDirection(Direction.FORWARD);
 
-        List<Track> routes = List.of(track1, sys1,  track12, track13, semaphore1, track2, track21, sys2, track22, track23, semaphore2, track3, sys3, platform2 );
+        List<Track> routes = List.of(circuit1, track1, track12, track13, circuit2, semaphore1, track2, track21, track22, track23, circuit3, semaphore2, track3, circuit4, platform2);
         train.addStops(start, end);
         train.getRoute().addAll(routes);
 
