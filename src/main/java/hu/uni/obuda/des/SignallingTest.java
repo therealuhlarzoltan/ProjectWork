@@ -6,6 +6,7 @@ import hu.uni.obuda.des.railways.events.movement.TrainArrivalEvent;
 import hu.uni.obuda.des.railways.installations.Semaphore;
 import hu.uni.obuda.des.railways.installations.BlockSignallingSystem;
 import hu.uni.obuda.des.railways.installations.TrackCircuit;
+import hu.uni.obuda.des.railways.simulation.RailwaySimulator;
 import hu.uni.obuda.des.railways.stations.Station;
 import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.tracks.Track;
@@ -99,7 +100,7 @@ public class SignallingTest {
         eventQueue.insert(new TrainArrivalEvent(0, train, platform1));
         //eventQueue.insert(new TrainArrivalEvent(4, train2, platform1));
         //eventQueue.insert(new TrainDepartureEvent(0, train, szob.getPlatforms()[0]));
-        Simulator simulator = new Simulator(eventQueue);
+        Simulator simulator = new RailwaySimulator(eventQueue);
         simulator.processAllEvents();
     }
 }
