@@ -10,7 +10,7 @@ public class SpeedProfileCalculatorImpl implements SpeedProfileCalculator {
     }
 
     @Override
-    public double calculateTravelTimeBraking(double distance, double startingSpeed, double startingAcceleration, Train train, Track track) {
+    public double calculateTravelTimeBraking(double distance, double startingSpeed, double startingAcceleration, double targetSpeed, Train train, Track track) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
