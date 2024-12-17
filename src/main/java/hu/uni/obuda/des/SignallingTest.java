@@ -70,10 +70,14 @@ public class SignallingTest {
         sys3.setStartTrackCircuit(circuit5);
         sys3.setEndTrackCircuit(circuit6);
 
+        /*
+
+        // Forward signalling test
+
         Train train = Train.builder().id("Train1").maxSpeed(160).manufacturer("Siemens").model("DesiroML")
-                .departureStation("Start Station").lineNumber("S10").capacity(300).arrivalStation("End Station")
+                .departureStation("Start Station").lineNumber("S10").capacity(290).arrivalStation("End Station")
                 .currentTrack(platform1).currentStation(platform1.getStation())
-                .lengthInKm(0.6)
+                .lengthInKm(0.102)
                 .build();
 
         train.modifySchedule(start.getName(), 0, 0);
@@ -85,21 +89,33 @@ public class SignallingTest {
         train.addStops(start, end);
         train.getRoute().addAll(routes);
 
-      /*  Train train2 = Train.builder().id("Train2").maxSpeed(160).manufacturer("Siemens").model("Minero")
-                .departureStation("Start Station").lineNumber("Z10").capacity(300).arrivalStation("End Station")
+         */
+
+
+
+      // Backward signalling test
+
+      Train train2 = Train.builder().id("Train2").maxSpeed(160).manufacturer("Stadler").model("Kiss")
+                .departureStation("End Station").lineNumber("Z10").capacity(600).arrivalStation("Start Station")
+                .lengthInKm(0.156)
                 .build();
-        train2.addStops(start, end);
-        train2.getRoute().addAll(routes);
 
-        train2.modifySchedule(start.getName(), 4, 4);
-        train2.modifySchedule(end.getName(), 14, 14);
+        List<Track> route2 = List.of(circuit6, track3, circuit5, semaphore2, circuit4, track23, track22, track21, track2, circuit3, semaphore1, circuit2, track13, track12, track1, circuit1, platform1);
+        train2.addStops(end, start);
+        train2.getRoute().addAll(route2);
 
-        train2.setCurrentDirection(Direction.FORWARD);*/
+        train2.modifySchedule(end.getName(), 0, 0);
+        train2.modifySchedule(start.getName(), 14, 14);
+
+        train2.setCurrentDirection(Direction.BACKWARD);
+
+
 
         EventQueue eventQueue = new EventQueue();
-        eventQueue.insert(new TrainArrivalEvent(0, train, platform1));
+        //eventQueue.insert(new TrainArrivalEvent(0, train, platform1));
         //eventQueue.insert(new TrainArrivalEvent(4, train2, platform1));
         //eventQueue.insert(new TrainDepartureEvent(0, train, szob.getPlatforms()[0]));
+        eventQueue.insert(new TrainArrivalEvent(0, train2, platform2));
         Simulator simulator = new RailwaySimulator(eventQueue);
         simulator.processAllEvents();
     }
