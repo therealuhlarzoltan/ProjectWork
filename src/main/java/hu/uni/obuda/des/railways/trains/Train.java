@@ -22,6 +22,8 @@ public class Train implements Actor {
     private final int capacity;
     private final String departureStation;
     private final String arrivalStation;
+    private final double maxAcceleration;
+    private final double maxDeceleration;
     private final Queue<Track> route = new LinkedList<>();
     private final List<Station> stops = new ArrayList<>();
     private Station currentStation;
@@ -29,9 +31,12 @@ public class Train implements Actor {
     private final Map<String, Pair<Double, Double>> schedule = new HashMap<>();
 
     private int currentSpeed;
+    private double currentAcceleration;
     private int passengers;
     private Track currentTrack;
     private Direction currentDirection;
+    private double targetSpeed;
+    private double targetAcceleration;
 
     public void addStops(Station... stations) {
         Objects.requireNonNull(stations, "Stations cannot be null");
@@ -68,6 +73,10 @@ public class Train implements Actor {
         passengersByDestination.putIfAbsent(destination, passengersToAdd);
         passengers += passengersToAdd;
         return passengersToAdd;
+    }
+
+    public List<Track> getRouteAsList() {
+        return Collections.unmodifiableList((LinkedList<Track>)route);
     }
 
     @Override
