@@ -7,7 +7,7 @@ import hu.uni.obuda.des.railways.tracks.Track;
 import lombok.Getter;
 
 @Getter
-public class Semaphore extends Track implements DirectionalResource {
+public class MainSignal extends Track implements DirectionalResource {
     public enum RailwaySignal {
         PROCEED(Integer.MAX_VALUE),
         MAX_SPEED_120(120),
@@ -30,7 +30,10 @@ public class Semaphore extends Track implements DirectionalResource {
     private RailwaySignal forwardSignal;
     private RailwaySignal backwardSignal;
 
-    public Semaphore(String id, int maxSpeed) {
+    private DistantSignal startDistantSignal;
+    private DistantSignal endDistantSignal;
+
+    public MainSignal(String id, int maxSpeed) {
         super(id, 0.0001, maxSpeed);
         forwardSignal = RailwaySignal.PROCEED;
         backwardSignal = RailwaySignal.PROCEED;

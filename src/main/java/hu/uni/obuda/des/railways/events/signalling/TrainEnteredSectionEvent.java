@@ -2,7 +2,7 @@ package hu.uni.obuda.des.railways.events.signalling;
 
 import hu.uni.obuda.des.core.events.Event;
 import hu.uni.obuda.des.core.simulation.AbstractSimulator;
-import hu.uni.obuda.des.railways.installations.Semaphore;
+import hu.uni.obuda.des.railways.installations.MainSignal;
 import hu.uni.obuda.des.railways.installations.BlockSignallingSystem;
 import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.trains.Train;
@@ -33,22 +33,22 @@ public class TrainEnteredSectionEvent extends Event {
         notifyCurrentSystem(simulator, direction);
     }
 
-    private Semaphore findPreviousSemaphore(BlockSignallingSystem currentSystem, Direction direction) {
+    private MainSignal findPreviousSemaphore(BlockSignallingSystem currentSystem, Direction direction) {
         if (direction.equals(Direction.FORWARD)) {
-            return currentSystem.getStartSemaphore();
+            return currentSystem.getStartMainSignal();
         } else if (direction.equals(Direction.BACKWARD)) {
-            return currentSystem.getEndSemaphore();
+            return currentSystem.getEndMainSignal();
         } else {
             assert false : "Invalid direction";
             return null;
         }
     }
 
-    private Semaphore findNextSemaphore(BlockSignallingSystem currentSystem, Direction direction) {
+    private MainSignal findNextSemaphore(BlockSignallingSystem currentSystem, Direction direction) {
         if (direction.equals(Direction.FORWARD)) {
-            return currentSystem.getEndSemaphore();
+            return currentSystem.getEndMainSignal();
         } else if (direction.equals(Direction.BACKWARD)) {
-            return currentSystem.getStartSemaphore();
+            return currentSystem.getStartMainSignal();
         } else {
             assert false : "Invalid direction";
             return null;

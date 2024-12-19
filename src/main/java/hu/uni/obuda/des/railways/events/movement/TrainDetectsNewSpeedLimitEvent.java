@@ -1,7 +1,7 @@
 package hu.uni.obuda.des.railways.events.movement;
 
 import hu.uni.obuda.des.core.simulation.AbstractSimulator;
-import hu.uni.obuda.des.railways.installations.Semaphore;
+import hu.uni.obuda.des.railways.installations.MainSignal;
 import hu.uni.obuda.des.railways.tracks.Track;
 import hu.uni.obuda.des.railways.trains.Train;
 import lombok.Getter;
@@ -33,7 +33,7 @@ public class TrainDetectsNewSpeedLimitEvent extends TrainMovementEvent {
         if (route.size() > 1) {
             double distance = 0;
             for (int i = 1; i < route.size(); i++) {
-                if (route.get(i) instanceof Semaphore)
+                if (route.get(i) instanceof MainSignal)
                     break;
                 distance += route.get(i).getLengthInKm();
             }

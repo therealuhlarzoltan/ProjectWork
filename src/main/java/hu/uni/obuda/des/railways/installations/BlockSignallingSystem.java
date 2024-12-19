@@ -18,8 +18,8 @@ public class BlockSignallingSystem implements Resource {
 
     private final String id;
 
-    private Semaphore startSemaphore;
-    private Semaphore endSemaphore;
+    private MainSignal startMainSignal;
+    private MainSignal endMainSignal;
 
     private TrackCircuit startTrackCircuit;
     private TrackCircuit endTrackCircuit;
