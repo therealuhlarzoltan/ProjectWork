@@ -22,7 +22,7 @@ public class Switch extends Track {
     }
 
     private final List<BlockSignallingSystem> blockSignallingSystems = new ArrayList<>(4);
-    private final List<Semaphore> semaphores = new ArrayList<>(4);
+    private final List<MainSignal> mainSignals = new ArrayList<>(4);
     private Track selectedTrack;
 
     public boolean switchTrack() {
@@ -41,8 +41,8 @@ public class Switch extends Track {
         blockSignallingSystems.add(blockSignallingSystem);
     }
 
-    public void addSemaphore(Semaphore semaphore) {
-        semaphores.add(semaphore);
+    public void addSemaphore(MainSignal mainSignal) {
+        mainSignals.add(mainSignal);
     }
 
 }

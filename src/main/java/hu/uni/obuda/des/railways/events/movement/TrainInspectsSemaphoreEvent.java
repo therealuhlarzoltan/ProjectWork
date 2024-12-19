@@ -1,7 +1,7 @@
 package hu.uni.obuda.des.railways.events.movement;
 
 import hu.uni.obuda.des.core.simulation.AbstractSimulator;
-import hu.uni.obuda.des.railways.installations.Semaphore;
+import hu.uni.obuda.des.railways.installations.MainSignal;
 import hu.uni.obuda.des.railways.tracks.Direction;
 import hu.uni.obuda.des.railways.tracks.Track;
 import hu.uni.obuda.des.railways.trains.Train;
@@ -9,18 +9,18 @@ import hu.uni.obuda.des.railways.trains.Train;
 import java.util.Objects;
 
 public class TrainInspectsSemaphoreEvent extends TrainMovementEvent {
-    private final Semaphore semaphore;
+    private final MainSignal mainSignal;
     private final double distanceToSemaphore;
 
-    public TrainInspectsSemaphoreEvent(double eventTime, Train train, Track currentTrack, Semaphore semaphore, double distanceToSemaphore) {
+    public TrainInspectsSemaphoreEvent(double eventTime, Train train, Track currentTrack, MainSignal mainSignal, double distanceToSemaphore) {
         super(eventTime, train, currentTrack);
-        this.semaphore = Objects.requireNonNull(semaphore);
+        this.mainSignal = Objects.requireNonNull(mainSignal);
         this.distanceToSemaphore = distanceToSemaphore;
     }
 
     @Override
     public void execute(AbstractSimulator simulator) {
-        int speedLimit = getSemaphoresSpeedLimit(semaphore, train, Direction.FORWARD);
+        int speedLimit = getSemaphoresSpeedLimit(mainSignal, train, Direction.FORWARD);
         if ((speedLimit <= track.getMaxSpeed()) && speedLimit > train.getCurrentSpeed()) {
             double speedingTime = calculateSpeedingTime();
         } else if (speedLimit < train.getCurrentSpeed()) {
@@ -31,22 +31,22 @@ public class TrainInspectsSemaphoreEvent extends TrainMovementEvent {
         }
 
 
-        System.out.println("Train " + train + " inspects semaphore " + semaphore + " at " + getEventTime());
+        System.out.println("Train " + train + " inspects semaphore " + mainSignal + " at " + getEventTime());
 
     }
 
-    private int getSemaphoresSpeedLimit(Semaphore semaphore, Train train, Direction direction) {
-        int semaphoresSignal = semaphore.getSpeedLimit(direction);
+    private int getSemaphoresSpeedLimit(MainSignal mainSignal, Train train, Direction direction) {
+        int semaphoresSignal = mainSignal.getSpeedLimit(direction);
         if (semaphoresSignal == Integer.MAX_VALUE) {
-            return findNextTracksSpeedLimit(semaphore, train);
+            return findNextTracksSpeedLimit(mainSignal, train);
         } else {
             return semaphoresSignal;
         }
     }
 
-    private int findNextTracksSpeedLimit(Semaphore semaphore, Train train) {
+    private int findNextTracksSpeedLimit(MainSignal mainSignal, Train train) {
         var route = train.getRouteAsList();
-        int semaphoreIndex = route.indexOf(semaphore);
+        int semaphoreIndex = route.indexOf(mainSignal);
         if (semaphoreIndex != route.size() - 2) {
             return route.get(semaphoreIndex + 1).getMaxSpeed();
         } else {

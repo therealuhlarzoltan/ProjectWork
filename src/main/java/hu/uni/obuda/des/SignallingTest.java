@@ -3,7 +3,7 @@ package hu.uni.obuda.des;
 import hu.uni.obuda.des.core.simulation.EventQueue;
 import hu.uni.obuda.des.core.simulation.Simulator;
 import hu.uni.obuda.des.railways.events.movement.TrainArrivalEvent;
-import hu.uni.obuda.des.railways.installations.Semaphore;
+import hu.uni.obuda.des.railways.installations.MainSignal;
 import hu.uni.obuda.des.railways.installations.BlockSignallingSystem;
 import hu.uni.obuda.des.railways.installations.TrackCircuit;
 import hu.uni.obuda.des.railways.simulation.RailwaySimulator;
@@ -31,7 +31,7 @@ public class SignallingTest {
         Track track12 = new Track("Track12", 1, 120);
         Track track13 = new Track("Track13", 3, 120);
         TrackCircuit circuit2 = new TrackCircuit("Circuit2", 120);
-        Semaphore semaphore1 = new Semaphore("Sem1", 120);
+        MainSignal mainSignal1 = new MainSignal("Sem1", 120);
         TrackCircuit circuit3 = new TrackCircuit("Circuit3", 100);
         Track track2 = new Track("Track2", 5, 100);
         Track track21 = new Track("Track21", 3, 80);
@@ -39,22 +39,22 @@ public class SignallingTest {
         Track track22 = new Track("Track22", 2, 120);
         Track track23 = new Track("Track23", 8, 160);
         TrackCircuit circuit4 = new TrackCircuit("Circuit4", 160);
-        Semaphore semaphore2 = new Semaphore("Sem2", 120);
+        MainSignal mainSignal2 = new MainSignal("Sem2", 120);
         TrackCircuit circuit5 = new TrackCircuit("Circuit5", 80);
         Track track3 = new Track("Track3", 10, 80);
         TrackCircuit circuit6 = new TrackCircuit("Circuit6", 80);
         BlockSignallingSystem sys3 = new BlockSignallingSystem("Block3");
 
-        sys1.setStartSemaphore(null);
+        sys1.setStartMainSignal(null);
         sys1.setNextSystem(sys2);
-        sys1.setEndSemaphore(semaphore1);
+        sys1.setEndMainSignal(mainSignal1);
         sys2.setPreviousSystem(sys1);
-        sys2.setStartSemaphore(semaphore1);
+        sys2.setStartMainSignal(mainSignal1);
         sys2.setNextSystem(sys3);
-        sys2.setEndSemaphore(semaphore2);
-        sys3.setStartSemaphore(semaphore2);
+        sys2.setEndMainSignal(mainSignal2);
+        sys3.setStartMainSignal(mainSignal2);
         sys3.setPreviousSystem(sys2);
-        sys3.setEndSemaphore(null);
+        sys3.setEndMainSignal(null);
 
         circuit1.setBlockSignallingSystem(sys1);
         circuit2.setBlockSignallingSystem(sys1);
@@ -100,7 +100,7 @@ public class SignallingTest {
                 .lengthInKm(0.156)
                 .build();
 
-        List<Track> route2 = List.of(circuit6, track3, circuit5, semaphore2, circuit4, track23, track22, track21, track2, circuit3, semaphore1, circuit2, track13, track12, track1, circuit1, platform1);
+        List<Track> route2 = List.of(circuit6, track3, circuit5, mainSignal2, circuit4, track23, track22, track21, track2, circuit3, mainSignal1, circuit2, track13, track12, track1, circuit1, platform1);
         train2.addStops(end, start);
         train2.getRoute().addAll(route2);
 
