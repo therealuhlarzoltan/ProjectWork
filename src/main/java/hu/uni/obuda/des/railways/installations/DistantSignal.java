@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class DistantSignal extends Track {
     private MainSignal mainSignal;
+    private double distanceToMainSignal;
 
     public DistantSignal(String id, int maxSpeed) {
         super(id, 0.0001, maxSpeed);
