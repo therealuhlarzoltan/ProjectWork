@@ -66,6 +66,34 @@ public class TrainTravelsOnTrackEvent extends TrainMovementEvent {
      * @param train The train that is moving forward.
      */
     private void moveTrainHeadForward(AbstractSimulator simulator, Train train) {
+        double vStart = train.getCurrentSpeed() * (5.0 / 18.0); // Convert from km/h to m/s
+        double vTarget = train.getTargetSpeed() * (5.0 / 18.0); // Convert from km/h to m/s
+        double aMax = train.getMaxAcceleration(); // Already in m/s²
+        double decMax = train.getMaxDeceleration(); // Already in m/s²
+        double trackLength = Math.min(track.getLengthInKm() * 1000, train.getLengthInKm() * 1000); // Convert from km to m
+
+        // Time and distance for acceleration
+        double tAcc = (vTarget - vStart) / aMax;
+        double sAcc = (vStart * tAcc) + (0.5 * aMax * tAcc * tAcc);
+
+        // Time and distance for deceleration
+        double tDec = vTarget / decMax;
+        double sDec = (vTarget * tDec) - (0.5 * decMax * tDec * tDec);
+
+        // Time and distance at constant speed
+        double tConst = 0;
+        if (sAcc + sDec < trackLength) {
+            double sConst = trackLength - (sAcc + sDec);
+            tConst = sConst / vTarget;
+        }
+
+        // Total time in seconds
+        double totalTime = tAcc + tConst + tDec;
+
+        // Convert total time to minutes
+        double totalTimeInMinutes = totalTime / 60.0;
+
+        /*
         double timeToNextTrack = (track.getLengthInKm() / Math.min(train.getMaxSpeed(), track.getMaxSpeed())) * 60;
         var nextTrack = train.getRoute().poll();
 
@@ -76,6 +104,8 @@ public class TrainTravelsOnTrackEvent extends TrainMovementEvent {
             var nextTrackEvent = new TrainTravelsOnTrackEvent(getEventTime() + timeToNextTrack, train, nextTrack, track);
             simulator.insert(nextTrackEvent);
         }
+         */
+        simulator.insert(new TrainChecksCurrentSpeedLimitEvent(getEventTime() + totalTimeInMinutes, train, track, track.getLengthInKm() - trackLength));
     }
 
     /**
@@ -85,8 +115,34 @@ public class TrainTravelsOnTrackEvent extends TrainMovementEvent {
     * @param train The train that is leaving the track
      */
     private void moveTrainTailForward(AbstractSimulator simulator, Train train) {
-        double timeToExitPreviousSection = (train.getLengthInKm() / Math.min(train.getMaxSpeed(), track.getMaxSpeed())) * 60;
-        var trainLeavesTrackEvent = new TrainLeavesTrackEvent(getEventTime() + timeToExitPreviousSection, train, previousTrack);
+        double vStart = train.getCurrentSpeed() * (5.0 / 18.0); // Convert from km/h to m/s
+        double vTarget = train.getTargetSpeed() * (5.0 / 18.0); // Convert from km/h to m/s
+        double aMax = train.getMaxAcceleration(); // Already in m/s²
+        double decMax = train.getMaxDeceleration(); // Already in m/s²
+        double trainLength = train.getLengthInKm() * 1000; // Convert train length from km to m
+
+        // Time and distance for acceleration
+        double tAcc = (vTarget - vStart) / aMax;
+        double sAcc = (vStart * tAcc) + (0.5 * aMax * tAcc * tAcc);
+
+        // Time and distance for deceleration
+        double tDec = vTarget / decMax;
+        double sDec = (vTarget * tDec) - (0.5 * decMax * tDec * tDec);
+
+        // Time and distance at constant speed
+        double tConst = 0;
+        if (sAcc + sDec < trainLength) {
+            double sConst = trainLength - (sAcc + sDec);
+            tConst = sConst / vTarget;
+        }
+
+        // Total time in seconds
+        double totalTime = tAcc + tConst + tDec;
+
+        // Convert total time to minutes
+        double totalTimeInMinutes = totalTime / 60.0;
+
+        var trainLeavesTrackEvent = new TrainLeavesTrackEvent(getEventTime() + totalTimeInMinutes, train, previousTrack);
         simulator.insert(trainLeavesTrackEvent);
     }
 

@@ -11,23 +11,30 @@ import java.util.Objects;
 public class TrainInspectsSemaphoreEvent extends TrainMovementEvent {
     private final MainSignal mainSignal;
     private final double distanceToSemaphore;
+    private final double distanceToNextTrack;
 
-    public TrainInspectsSemaphoreEvent(double eventTime, Train train, Track currentTrack, MainSignal mainSignal, double distanceToSemaphore) {
+    public TrainInspectsSemaphoreEvent(double eventTime, Train train, Track currentTrack, MainSignal mainSignal, double distanceToSemaphore, double distanceToNextTrack) {
         super(eventTime, train, currentTrack);
         this.mainSignal = Objects.requireNonNull(mainSignal);
         this.distanceToSemaphore = distanceToSemaphore;
+        this.distanceToNextTrack = distanceToNextTrack;
     }
 
     @Override
     public void execute(AbstractSimulator simulator) {
         int speedLimit = getSemaphoresSpeedLimit(mainSignal, train, Direction.FORWARD);
         if ((speedLimit <= track.getMaxSpeed()) && speedLimit > train.getCurrentSpeed()) {
-            double speedingTime = calculateSpeedingTime();
+            double vTarget = Math.min(speedLimit, train.getMaxSpeed());
         } else if (speedLimit < train.getCurrentSpeed()) {
-            double breakingTime = calculateBreakingTime();
-        } else {
-            double cruisingTime = calculateCruisingTime(train.getCurrentSpeed(), distanceToSemaphore);
+            double vTarget = speedLimit;
 
+        } else {
+           var nextTrack = train.getRoute().poll();
+           assert nextTrack != null : "Empty route provided inside TrainInspectsSemaphoreEvent";
+
+
+           double totalTime = 0;
+           simulator.insert(new TrainTravelsOnTrackEvent(getEventTime() + totalTime, train, nextTrack, track));
         }
 
 
@@ -52,20 +59,5 @@ public class TrainInspectsSemaphoreEvent extends TrainMovementEvent {
         } else {
             return 0;
         }
-    }
-
-    private double calculateBreakingTime() {
-        // TODO: related to speed profiles
-        return 0;
-    }
-
-    private double calculateSpeedingTime() {
-        // TODO: related to speed profiles
-        return 0;
-    }
-
-    private double calculateCruisingTime(double speed, double distance) {
-        // TODO: related to speed profiles
-        return distance / speed;
     }
 }
