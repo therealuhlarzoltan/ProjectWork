@@ -12,6 +12,7 @@ public class AbstractSimulator {
     public void insert(AbstractEvent e) {
         events.insert(e);
     }
+
     public AbstractEvent cancel(AbstractEvent e)  {
         throw new UnsupportedOperationException("Not implemented");
     }

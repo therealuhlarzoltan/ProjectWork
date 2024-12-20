@@ -25,8 +25,15 @@ public class TrainInspectsSemaphoreEvent extends TrainMovementEvent {
         int speedLimit = getSemaphoresSpeedLimit(mainSignal, train, Direction.FORWARD);
         if ((speedLimit <= track.getMaxSpeed()) && speedLimit > train.getCurrentSpeed()) {
             double vTarget = Math.min(speedLimit, train.getMaxSpeed());
+
+            double totalTime = 0;
+            simulator.insert(new TrainTravelsOnTrackEvent(getEventTime() + totalTime, train, track, track));
         } else if (speedLimit < train.getCurrentSpeed()) {
             double vTarget = speedLimit;
+            double currentTrackRatio = distanceToSemaphore / distanceToNextTrack;
+            vTarget *= currentTrackRatio;
+
+
 
         } else {
            var nextTrack = train.getRoute().poll();
